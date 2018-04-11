@@ -39,12 +39,14 @@ import java.util.Locale;
 public class CSVFileLogger implements FileLogger {
 
     private final Integer batteryLevel;
+    private final Boolean chargingStatus;
     private File file;
     protected final String name = "TXT";
 
-    public CSVFileLogger(File file, @Nullable Integer batteryLevel) {
+    public CSVFileLogger(File file, @Nullable Integer batteryLevel, @Nullable Boolean chargingStatus) {
         this.file = file;
         this.batteryLevel = batteryLevel;
+        this.chargingStatus = chargingStatus;
     }
 
     @Override
@@ -64,7 +66,7 @@ public class CSVFileLogger implements FileLogger {
             description = "\"" + description.replaceAll("\"", "\"\"") + "\"";
         }
 
-        String outputString = String.format(Locale.US, "%s,%f,%f,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", dateTimeString,
+        String outputString = String.format(Locale.US, "%s,%f,%f,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", dateTimeString,
                 loc.getLatitude(),
                 loc.getLongitude(),
                 loc.hasAltitude() ? loc.getAltitude() : "",
@@ -81,6 +83,7 @@ public class CSVFileLogger implements FileLogger {
                 (loc.getExtras() != null && !Strings.isNullOrEmpty(loc.getExtras().getString(BundleConstants.DGPSID))) ? loc.getExtras().getString(BundleConstants.DGPSID) : "",
                 (loc.getExtras() != null && !Strings.isNullOrEmpty(loc.getExtras().getString(BundleConstants.DETECTED_ACTIVITY))) ? loc.getExtras().getString(BundleConstants.DETECTED_ACTIVITY) : "",
                 (batteryLevel != null) ? batteryLevel : "",
+                (chargingStatus != null) ? chargingStatus : "",
                 description
         );
         return outputString;

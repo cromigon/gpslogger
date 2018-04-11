@@ -38,14 +38,16 @@ public class CustomUrlLogger implements FileLogger {
     private final String name = "URL";
     private final String customLoggingUrl;
     private final int batteryLevel;
+    private final boolean chargingStatus;
     private final String androidId;
     private final String httpMethod;
     private final String httpBody;
     private final String httpHeaders;
 
-    public CustomUrlLogger(String customLoggingUrl, int batteryLevel, String androidId, String httpMethod, String httpBody, String httpHeaders) {
+    public CustomUrlLogger(String customLoggingUrl, int batteryLevel, boolean chargingStatus, String androidId, String httpMethod, String httpBody, String httpHeaders) {
         this.customLoggingUrl = customLoggingUrl;
         this.batteryLevel = batteryLevel;
+        this.chargingStatus = chargingStatus;
         this.androidId = androidId;
         this.httpMethod = httpMethod;
         this.httpBody = httpBody;
@@ -62,11 +64,11 @@ public class CustomUrlLogger implements FileLogger {
     @Override
     public void annotate(String description, Location loc) throws Exception {
 
-        String finalUrl = getFormattedTextblock(customLoggingUrl, loc, description, androidId, batteryLevel, Strings.getBuildSerial(),
+        String finalUrl = getFormattedTextblock(customLoggingUrl, loc, description, androidId, batteryLevel, chargingStatus, Strings.getBuildSerial(),
                 Session.getInstance().getStartTimeStamp(), Session.getInstance().getCurrentFormattedFileName());
-        String finalBody = getFormattedTextblock(httpBody, loc, description, androidId, batteryLevel, Strings.getBuildSerial(),
+        String finalBody = getFormattedTextblock(httpBody, loc, description, androidId, batteryLevel, chargingStatus, Strings.getBuildSerial(),
                 Session.getInstance().getStartTimeStamp(), Session.getInstance().getCurrentFormattedFileName());
-        String finalHeaders = getFormattedTextblock(httpHeaders, loc, description, androidId, batteryLevel, Strings.getBuildSerial(),
+        String finalHeaders = getFormattedTextblock(httpHeaders, loc, description, androidId, batteryLevel, chargingStatus, Strings.getBuildSerial(),
                 Session.getInstance().getStartTimeStamp(), Session.getInstance().getCurrentFormattedFileName());
 
 
@@ -76,7 +78,7 @@ public class CustomUrlLogger implements FileLogger {
 
 
     public String getFormattedTextblock(String customLoggingUrl, Location loc, String description, String androidId,
-                                        float batteryLevel, String buildSerial, long sessionStartTimeStamp, String fileName)
+                                        float batteryLevel, boolean chargingStatus, String buildSerial, long sessionStartTimeStamp, String fileName)
             throws Exception {
 
         String logUrl = customLoggingUrl;
@@ -94,6 +96,7 @@ public class CustomUrlLogger implements FileLogger {
         logUrl = logUrl.replaceAll("(?i)%time", String.valueOf(Strings.getIsoDateTime(new Date(sLoc.getTime()))));
         logUrl = logUrl.replaceAll("(?i)%starttimestamp", String.valueOf(sessionStartTimeStamp/1000));
         logUrl = logUrl.replaceAll("(?i)%batt", String.valueOf(batteryLevel));
+        logUrl = logUrl.replaceAll("(?i)%charg", String.valueOf(chargingStatus));
         logUrl = logUrl.replaceAll("(?i)%aid", String.valueOf(androidId));
         logUrl = logUrl.replaceAll("(?i)%ser", String.valueOf(buildSerial));
         logUrl = logUrl.replaceAll("(?i)%act", String.valueOf(sLoc.getDetectedActivity()));

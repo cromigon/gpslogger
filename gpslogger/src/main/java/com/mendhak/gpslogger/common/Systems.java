@@ -59,6 +59,14 @@ public class Systems {
         return (int) (((float) level / (float) scale) * 100.0f);
     }
 
+    public static boolean getBatteryIsCharging(Context context) {
+        Intent batteryIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+        boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL;
+
+        return isCharging;
+    }
+
     public static String getAndroidId(Context context) {
         return Settings.Secure.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);

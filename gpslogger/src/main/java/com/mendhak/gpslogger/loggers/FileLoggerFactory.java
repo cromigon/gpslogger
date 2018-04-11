@@ -72,8 +72,9 @@ public class FileLoggerFactory {
 
         if (preferenceHelper.shouldLogToCSV()) {
             int batteryLevel = Systems.getBatteryLevel(context);
+            boolean chargingStatus = Systems.getBatteryIsCharging(context);
             File file = new File(gpxFolder.getPath(), Strings.getFormattedFileName() + ".csv");
-            loggers.add(new CSVFileLogger(file, batteryLevel));
+            loggers.add(new CSVFileLogger(file, batteryLevel, chargingStatus));
         }
 
         if (preferenceHelper.shouldLogToOpenGTS()) {
@@ -82,9 +83,10 @@ public class FileLoggerFactory {
 
         if (preferenceHelper.shouldLogToCustomUrl()) {
             int batteryLevel = Systems.getBatteryLevel(context);
+            boolean chargingStatus = Systems.getBatteryIsCharging(context);
             String androidId = Systems.getAndroidId(context);
             loggers.add(new CustomUrlLogger(preferenceHelper.getCustomLoggingUrl(), batteryLevel,
-                    androidId, preferenceHelper.getCustomLoggingHTTPMethod(), preferenceHelper.getCustomLoggingHTTPBody(), preferenceHelper.getCustomLoggingHTTPHeaders()));
+                    chargingStatus, androidId, preferenceHelper.getCustomLoggingHTTPMethod(), preferenceHelper.getCustomLoggingHTTPBody(), preferenceHelper.getCustomLoggingHTTPHeaders()));
         }
 
         if(/* Should log to Android Wear */  true){
